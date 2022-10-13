@@ -52,5 +52,4 @@ if __name__ == "__main__":
             except OSError:
                 print(f"{ip_range} masscan error")
             print("-----")
-            time.sleep(5)
         print("done scanning")
