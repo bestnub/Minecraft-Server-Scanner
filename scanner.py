@@ -55,6 +55,7 @@ def print_time(threadName, ip):
                  'versionProtocol': status.version.protocol,
                  'versionName': status.version.name
                  }
+        print(myobj)
 
         x = requests.post(url, data=myobj)
         print(x)
