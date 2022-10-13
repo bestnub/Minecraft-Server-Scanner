@@ -35,7 +35,7 @@ if __name__ == "__main__":
                     print(f"Found: {ip} {host}")
                     print(host[0]["port"])
                     print(host[0]["proto"])
-                    if "tcp" is host[0]["proto"] and 25565 is host[0]["port"]:
+                    if "tcp" == host[0]["proto"] and 25565 == host[0]["port"]:
                         print("if true")
                         try:
                             server = JavaServer(ip, 25565)
