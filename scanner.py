@@ -27,7 +27,11 @@ class sendThread (threading.Thread):
             try:
                 url = 'https://api.gamingformiau.de/api/mcscanner'
                 response = requests.post(url, json=serverSend)
-                print(response)
+                print(response.status_code)
+                if (response.status_code != 200):
+                    sendQ.put(serverSend)
+                    print("Failed to send. Waititing 5 sec")
+                    time.sleep(5)
             except:
                 sendQ.put(serverSend)
                 print("Failed to send. Waititing 5 sec")
