@@ -26,6 +26,7 @@ if __name__ == "__main__":
             mas.scan(ip_range, ports='25565',
                          arguments='--max-rate 300000 --excludefile exclude.conf')
             print("eval")
+            print(mas.scan_result)
             for ip in mas.scan_result['scan']:
                 host = mas.scan_result['scan'][ip]
                 print(f"{ip} {host}")
