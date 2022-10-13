@@ -38,9 +38,11 @@ def print_time(threadName, ip):
         print("Found server: " + ip + " " + status.version.name +
               " " + str(status.players.online))
         playersString = "Palyer:"
+        players = []
         if status.players.sample is not None:
             for player in status.players.sample:
-                player.id
+                players.append({'id': player.id,
+                               'name': player.name})
                 playersString += " "
                 playersString += player.name
         print(playersString)
