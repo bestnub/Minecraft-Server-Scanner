@@ -15,14 +15,17 @@ def split_array(L, n):
     return [L[i::n] for i in range(n)]
 
 
-split = list()
+def ipToId(ip):
+    id = ip.replace(".", "0")
+    return id
+
 
 
 class myThread (threading.Thread):
-    def __init__(self, threadID, name):
+    def __init__(self, threadID, ip):
         threading.Thread.__init__(self)
         self.threadID = threadID
-        self.name = name
+        self.name = ip
 
     def run(self):
         print("Starting Thread " + self.name)
@@ -34,30 +37,29 @@ exitFlag = 0
 
 
 def print_time(threadName):
-    for z in split[int(threadName)]:
-        if exitFlag:
-            threadName.exit()
-        try:
-            ip = z
-            server = JavaServer(ip, 25565)
-            status = server.status()
-        except:
-            print("Failed to get status of: " + ip)
-        else:
-            print("Found server: " + ip + " " + status.version.name +
-                  " " + str(status.players.online))
-            playersString = "Palyer:"
-            if status.players.sample is not None:
-                for player in status.players.sample:
-                    playersString += " "
-                    playersString += player.name
-            print(playersString)
+    if exitFlag:
+        threadName.exit()
+    try:
+        ip = threadName
+        server = JavaServer(ip, 25565)
+        status = server.status()
+    except:
+        print("Failed to get status of: " + ip)
+    else:
+        print("Found server: " + ip + " " + status.version.name +
+              " " + str(status.players.online))
+        playersString = "Palyer:"
+        if status.players.sample is not None:
+            for player in status.players.sample:
+                playersString += " "
+                playersString += player.name
+        print(playersString)
 
 
 if __name__ == "__main__":
 
-    threads = int(
-        input('How many threads do you want to use? (Recommended 20): '))
+    # threads = int(
+    #     input('How many threads do you want to use? (Recommended 20): '))
 
     # create IP ranges
     A = list(range(1, 0xff))
@@ -103,17 +105,7 @@ if __name__ == "__main__":
                         #     print("-----")
                         # except:
                         #     print("Failed to get status of: " + ip)
-
-                    worker = 0
-                    if len(scanJobs) < int(threads):
-                        worker = len(scanJobs)
-                    else:
-                        worker = threads
-
-                    split = list(split_array(scanJobs, worker))
-
-                    for x in range(worker):
-                        thread = myThread(x, str(x)).start()
+                    thread = myThread(ipToId(ip), ip).start()
 
             except OSError:
                 print(f"{ip_range} masscan error")
