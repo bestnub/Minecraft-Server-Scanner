@@ -28,7 +28,7 @@ if __name__ == "__main__":
                 mas.scan(ip_range, ports='25565',
                          arguments='--max-rate 300000 --excludefile exclude.conf')
                 scan_result = json.loads(mas.scan_result)
-                print({scan_result["scan"]})
+                print(scan_result["scan"])
                 for ip in scan_result["scan"]:
                     print(ip)
                     host = scan_result["scan"][ip]
@@ -41,7 +41,7 @@ if __name__ == "__main__":
                         except:
                             print("Failed to get status of: " + ip)
 
-            except:
+            except OSError:
                 print(f"{ip_range} masscan error")
             print("-----")
             time.sleep(5)
