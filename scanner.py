@@ -27,7 +27,7 @@ if __name__ == "__main__":
                 mas = masscan.PortScanner()
                 mas.scan(ip_range, ports='25565',
                          arguments='--max-rate 300000 --excludefile exclude.conf')
-                scan_result = json.load(mas.scan_result)
+                scan_result = json.loads(mas.scan_result)
                 print(scan_result)
                 for ip in scan_result["scan"]:
                     host = scan_result["scan"][ip]
