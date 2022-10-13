@@ -30,17 +30,17 @@ if __name__ == "__main__":
                 scan_result = json.loads(mas.scan_result)
                 print(scan_result["scan"])
                 for ip in scan_result["scan"]:
-                    print(ip)
                     host = scan_result["scan"][ip]
-                    print(f"Found: {ip} {host}")
-                    print(host[0]["port"])
-                    print(host[0]["proto"])
                     if "tcp" == host[0]["proto"] and 25565 == host[0]["port"]:
-                        print("if true")
                         try:
                             server = JavaServer(ip, 25565)
                             status = server.status()
-                            print(status)
+                            print(f"IP: {ip}")
+                            print(
+                                f"PalyerCount: {status.players.online}/{status.players.max}")
+                            print(f"Palyer: {status.players.sample}")
+                            print(f"Version: {status.version}")
+                            print(f"Desc: {status.description}")
                         except:
                             print("Failed to get status of: " + ip)
 
