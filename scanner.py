@@ -9,9 +9,9 @@ import time
 
 
 ipQ = queue.LifoQueue()
-ipQ.maxsize = 150
+# ipQ.maxsize = 150
 sendQ = queue.LifoQueue()
-sendQ.maxsize = 300
+# sendQ.maxsize = 300
 
 
 class sendThread (threading.Thread):
@@ -29,9 +29,13 @@ class sendThread (threading.Thread):
                 response = requests.post(url, json=serverSend)
                 print(response.status_code)
                 if (response.status_code != 200):
-                    print("Failed to send")
+                    sendQ.put(serverSend)
+                    print(f"Failed to send {serverSend}. Waititing 30 sec")
+                    time.sleep(30)
             except:
-                print("Failed to send")
+                sendQ.put(serverSend)
+                print(f"Failed to send {serverSend}. Waititing 30 sec")
+                time.sleep(30)
 
 
 class scanThread (threading.Thread):
