@@ -42,8 +42,8 @@ if __name__ == "__main__":
                                 f"PalyerCount: {status.players.online}/{status.players.max}")
                             playersString = "Palyer:"
                             for player in status.players.sample:
+                                playersString += " "
                                 playersString += player.name
-                                playersString += ""
                             print(playersString)
                             print(
                                 f"Version: {status.version.protocol} {status.version.name}")
