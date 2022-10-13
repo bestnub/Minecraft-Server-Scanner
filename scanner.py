@@ -44,10 +44,10 @@ class Server(Base):
     __tablename__ = "server"
     id = Column(Integer, primary_key=True)
     ip = Column(String(15))
-    desc = Column(String(255))
+    desc = Column(String(250))
     maxUser = Column(Integer)
-    versionProtocol = Column(String(255))
-    versionName = Column(String(255))
+    versionProtocol = Column(String(250))
+    versionName = Column(String(250))
     users = relationship(
         "User", secondary=association_table, back_populates="servers"
     )
