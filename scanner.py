@@ -52,7 +52,8 @@ def print_time(threadName, ip):
                  'versionProtocol': status.version.protocol,
                  'versionName': status.version.name
                  }
-        requests.post(url, json=myobj)
+        x = requests.post(url, json=myobj)
+        print(x)
 
 
 if __name__ == "__main__":
