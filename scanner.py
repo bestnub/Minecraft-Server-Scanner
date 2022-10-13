@@ -33,8 +33,8 @@ if __name__ == "__main__":
                     print(ip)
                     host = scan_result["scan"][ip]
                     print(f"Found: {ip} {host}")
-                    print(host["port"])
-                    print(host["proto"])
+                    print(host[0]["port"])
+                    print(host[0]["proto"])
                     if "tcp" in host:
                         print("if 1 true")
                     if 25565 in host["tcp"]:
