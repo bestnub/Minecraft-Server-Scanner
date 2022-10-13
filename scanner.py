@@ -3,6 +3,7 @@ import sys
 import time
 import masscan
 from mcstatus import JavaServer
+import json
 
 
 if __name__ == "__main__":
@@ -26,9 +27,10 @@ if __name__ == "__main__":
                 mas = masscan.PortScanner()
                 mas.scan(ip_range, ports='25565',
                          arguments='--max-rate 300000 --excludefile exclude.conf')
-                print(mas.scan_result)
-                for ip in mas.scan_result["scan"]:
-                    host = mas.scan_result["scan"][ip]
+                scan_result = json.load(mas.scan_result)
+                print(scan_result)
+                for ip in scan_result["scan"]:
+                    host = scan_result["scan"][ip]
                     print(f"{ip} {host}")
                     if "tcp" in host and 25565 in host["tcp"]:
                         try:
