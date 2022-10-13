@@ -43,7 +43,7 @@ association_table = Table(
 class Server(Base):
     __tablename__ = "server"
     id = Column(Integer, primary_key=True)
-    ip = Column(String)
+    ip = Column(String(15))
     desc = Column(String)
     maxUser = Column(Integer)
     versionProtocol = Column(String)
