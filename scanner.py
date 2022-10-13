@@ -1,3 +1,6 @@
+from unicodedata import name
+from uuid import UUID
+from sqlalchemy.orm import relationship
 import random
 import sys
 import time
@@ -10,17 +13,61 @@ import threading
 import time
 import argparse
 import queue
+import os
+from sqlalchemy import Column, Table
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy.orm import declarative_base
+from sqlalchemy import create_engine
+from dotenv import load_dotenv
 
-q = queue.LifoQueue()
+load_dotenv()
+
+DB_DATABASE = os.getenv('DB_DATABASE')
+DB_IP = os.getenv('DB_IP')
+DB_USER = os.getenv('DB_USER')
+DB_PW = os.getenv('DB_PW')
+
+Base = declarative_base()
 
 
-def split_array(L, n):
-    return [L[i::n] for i in range(n)]
+association_table = Table(
+    "server_user",
+    Base.metadata,
+    Column("server_id", ForeignKey("server.id"), primary_key=True),
+    Column("user_uuid", ForeignKey("user.uuid"), primary_key=True),
+)
 
 
-def ipToId(ip):
-    id = ip.replace(".", "0")
-    return id
+class Server(Base):
+    __tablename__ = "server"
+    id = Column(Integer, primary_key=True)
+    ip = Column(String)
+    desc = Column(String)
+    maxUser = Column(Integer)
+    versionProtocol = Column(String)
+    versionName = Column(String)
+    users = relationship(
+        "User", secondary=association_table, back_populates="servers"
+    )
+
+
+class User(Base):
+    __tablename__ = "user"
+    uuid = Column(UUID, primary_key=True)
+    name = Column(String)
+    servers = relationship(
+        "Server", secondary=association_table, back_populates="users"
+    )
+
+
+engine = create_engine(
+    "mariadb://" + DB_USER + ":" + DB_PW + "@" + DB_IP + "/" + DB_DATABASE, echo=True, future=True)
+Base.metadata.create_all(engine)
+
+
+ipQ = queue.LifoQueue()
 
 
 class myThread (threading.Thread):
@@ -32,7 +79,7 @@ class myThread (threading.Thread):
     def run(self):
         print("Starting Thread " + self.name)
         while True:
-            print_time(self.name, q.get())
+            print_time(self.name, ipQ.get())
 
 
 exitFlag = 0
@@ -53,6 +100,7 @@ def print_time(threadName, ip):
         playersString = "Palyer:"
         if status.players.sample is not None:
             for player in status.players.sample:
+                player.id
                 playersString += " "
                 playersString += player.name
         print(playersString)
@@ -92,7 +140,7 @@ if __name__ == "__main__":
                     host = scan_result["scan"][ip]
                     if "tcp" == host[0]["proto"] and 25565 == host[0]["port"]:
                         # scanJobs.append(ip)
-                        q.put(ip)
+                        ipQ.put(ip)
                         # try:
                         #     server = JavaServer(ip, 25565)
                         #     status = server.status()
@@ -114,5 +162,5 @@ if __name__ == "__main__":
 
             except OSError:
                 print(f"{ip_range} masscan error")
-        q.join()
+        ipQ.join()
         print("done scanning")
