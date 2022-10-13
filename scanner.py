@@ -34,6 +34,7 @@ if __name__ == "__main__":
                     host = scan_result["scan"][ip]
                     print(f"Found: {ip} {host}")
                     if "tcp" in host and 25565 in host["tcp"]:
+                        print("if true")
                         try:
                             server = JavaServer(ip, 25565)
                             status = server.status()
