@@ -55,7 +55,7 @@ class Server(Base):
 
 class User(Base):
     __tablename__ = "user"
-    uuid = Column(UUID, primary_key=True)
+    uuid = Column(String, primary_key=True)
     name = Column(String)
     servers = relationship(
         "Server", secondary=association_table, back_populates="users"
