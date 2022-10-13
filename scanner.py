@@ -5,6 +5,7 @@ import json
 import threading
 import queue
 import requests
+import time
 
 
 ipQ = queue.LifoQueue()
@@ -20,9 +21,15 @@ class sendThread (threading.Thread):
     def run(self):
         print("Starting Thread " + self.name)
         while True:
-            url = 'https://api.gamingformiau.de/api/mcscanner'
-            response = requests.post(url, json=sendQ.get())
-            print(response)
+            serverSend = sendQ.get()
+            try:
+                url = 'https://api.gamingformiau.de/api/mcscanner'
+                response = requests.post(url, json=serverSend)
+                print(response)
+            except:
+                sendQ.put(serverSend)
+                print("Failed to send. Waititing 5 sec")
+                time.sleep(5)
 
 
 class scanThread (threading.Thread):
