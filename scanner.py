@@ -9,8 +9,9 @@ import time
 
 
 ipQ = queue.LifoQueue()
+ipQ.maxsize = 150
 sendQ = queue.LifoQueue()
-sendQ.maxsize = 150
+sendQ.maxsize = 300
 
 
 class sendThread (threading.Thread):
