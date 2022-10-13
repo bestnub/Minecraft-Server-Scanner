@@ -57,7 +57,7 @@ def print_time(threadName, ip):
                  }
         print(myobj)
 
-        x = requests.post(url, data=myobj)
+        x = requests.post(url, json=myobj)
         print(x)
 
 
