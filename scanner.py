@@ -55,7 +55,7 @@ def print_time(threadName, ip):
                  'versionName': status.version.name
                  }
 
-        x = requests.post(url, json.JSONEncoder.encode(myobj))
+        x = requests.post(url, data=myobj)
         print(x)
 
 
