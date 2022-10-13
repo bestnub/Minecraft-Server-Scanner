@@ -8,9 +8,24 @@ import requests
 
 
 ipQ = queue.LifoQueue()
+sendQ = queue.LifoQueue()
 
 
-class myThread (threading.Thread):
+class sendThread (threading.Thread):
+    def __init__(self, threadID):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = threadID
+
+    def run(self):
+        print("Starting Thread " + self.name)
+        while True:
+            url = 'https://api.gamingformiau.de/api/mcscanner'
+            response = requests.post(url, json=sendQ.get())
+            print(response)
+
+
+class scanThread (threading.Thread):
     def __init__(self, threadID):
         threading.Thread.__init__(self)
         self.threadID = threadID
@@ -37,28 +52,20 @@ def print_time(threadName, ip):
     else:
         print("Found server: " + ip + " " + status.version.name +
               " " + str(status.players.online))
-        playersString = "Palyer:"
         players = []
         if status.players.sample is not None:
             for player in status.players.sample:
                 players.append({'id': player.id,
                                'name': player.name})
-                playersString += " "
-                playersString += player.name
-        print(playersString)
-        url = 'https://api.gamingformiau.de/api/mcscanner'
-        print(players)
-        myobj = {'players': players,
-                 'ip': ip,
-                 'desc': status.description,
-                 'maxPlayer': status.players.max,
-                 'versionProtocol': status.version.protocol,
-                 'versionName': status.version.name
-                 }
-        print(myobj)
-
-        x = requests.post(url, json=myobj)
-        print(x)
+        serverScan = {'players': players,
+                      'ip': ip,
+                      'desc': status.description,
+                      'maxPlayer': status.players.max,
+                      'versionProtocol': status.version.protocol,
+                      'versionName': status.version.name
+                      }
+        print(serverScan)
+        sendQ.put(serverScan)
 
 
 if __name__ == "__main__":
@@ -67,9 +74,10 @@ if __name__ == "__main__":
         input('How many threads do you want to use? (Recommended 20): '))
 
     for i in range(threads):
-        myThread(i).start()
+        scanThread(i).start()
+    sendThread(threads + 1).start()
 
-        # create IP ranges
+    # create IP ranges
     A = list(range(1, 0xff))
     B = list(range(1, 0xff))
     random.shuffle(A)
