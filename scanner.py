@@ -9,6 +9,9 @@ import math
 import threading
 import time
 import argparse
+import queue
+
+q = queue.LifoQueue()
 
 
 def split_array(L, n):
@@ -20,27 +23,26 @@ def ipToId(ip):
     return id
 
 
-
 class myThread (threading.Thread):
-    def __init__(self, threadID, ip):
+    def __init__(self, threadID):
         threading.Thread.__init__(self)
         self.threadID = threadID
-        self.name = ip
+        self.name = threadID
 
     def run(self):
         print("Starting Thread " + self.name)
-        print_time(self.name)
-        print("Exiting Thread " + self.name)
+        while True:
+            print_time(self.name, q.get())
 
 
 exitFlag = 0
 
 
-def print_time(threadName):
+def print_time(threadName, ip):
     if exitFlag:
+        print("Exiting Thread " + threadName)
         threadName.exit()
     try:
-        ip = threadName
         server = JavaServer(ip, 25565)
         status = server.status()
     except:
@@ -58,10 +60,13 @@ def print_time(threadName):
 
 if __name__ == "__main__":
 
-    # threads = int(
-    #     input('How many threads do you want to use? (Recommended 20): '))
+    threads = int(
+        input('How many threads do you want to use? (Recommended 20): '))
 
-    # create IP ranges
+    for i in range(threads):
+        myThread(i).start()
+
+        # create IP ranges
     A = list(range(1, 0xff))
     B = list(range(1, 0xff))
     random.shuffle(A)
@@ -82,11 +87,12 @@ if __name__ == "__main__":
                          arguments='--max-rate 300000 --excludefile exclude.conf')
                 scan_result = json.loads(mas.scan_result)
                 # print(scan_result["scan"])
-                scanJobs = []
+                # scanJobs = []
                 for ip in scan_result["scan"]:
                     host = scan_result["scan"][ip]
                     if "tcp" == host[0]["proto"] and 25565 == host[0]["port"]:
-                        scanJobs.append(ip)
+                        # scanJobs.append(ip)
+                        q.put(ip)
                         # try:
                         #     server = JavaServer(ip, 25565)
                         #     status = server.status()
@@ -105,8 +111,8 @@ if __name__ == "__main__":
                         #     print("-----")
                         # except:
                         #     print("Failed to get status of: " + ip)
-                    thread = myThread(ipToId(ip), ip).start()
 
             except OSError:
                 print(f"{ip_range} masscan error")
+        q.join()
         print("done scanning")
