@@ -104,7 +104,7 @@ if __name__ == "__main__":
     while True:
         random.shuffle(ip_ranges)
         for ip_range in ip_ranges:
-            print(ip_range)
+            print(f"{ip_range} Check queue: {ipQ.qsize}")
             try:
                 mas = masscan.PortScanner()
                 mas.scan(ip_range, ports='25565',
