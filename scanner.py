@@ -46,6 +46,11 @@ def print_time(threadName):
         else:
             print("Found server: " + ip + " " + status.version.name +
                   " " + str(status.players.online))
+            playersString = "Palyer:"
+            for player in status.players.sample:
+                playersString += " "
+                playersString += player.name
+            print(playersString)
 
 
 if __name__ == "__main__":
@@ -111,5 +116,4 @@ if __name__ == "__main__":
 
             except OSError:
                 print(f"{ip_range} masscan error")
-            print("-----")
         print("done scanning")
