@@ -35,12 +35,19 @@ if __name__ == "__main__":
                         try:
                             server = JavaServer(ip, 25565)
                             status = server.status()
+                            print("Server:")
+                            print(f"Desc: {status.description}")
                             print(f"IP: {ip}")
                             print(
                                 f"PalyerCount: {status.players.online}/{status.players.max}")
-                            print(f"Palyer: {status.players.sample}")
-                            print(f"Version: {status.version}")
-                            print(f"Desc: {status.description}")
+                            playersString = "Palyer:"
+                            for player in status.players.sample:
+                                playersString += player.name
+                                playersString += ""
+                            print(playersString)
+                            print(
+                                f"Version: {status.version.protocol} {status.version.name}")
+                            print("-----")
                         except:
                             print("Failed to get status of: " + ip)
 
