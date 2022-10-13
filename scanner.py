@@ -29,13 +29,9 @@ class sendThread (threading.Thread):
                 response = requests.post(url, json=serverSend)
                 print(response.status_code)
                 if (response.status_code != 200):
-                    sendQ.put(serverSend)
-                    print("Failed to send. Waititing 5 sec")
-                    time.sleep(5)
+                    print("Failed to send")
             except:
-                sendQ.put(serverSend)
-                print("Failed to send. Waititing 5 sec")
-                time.sleep(5)
+                print("Failed to send")
 
 
 class scanThread (threading.Thread):
