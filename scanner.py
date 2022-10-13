@@ -28,10 +28,11 @@ if __name__ == "__main__":
                 mas.scan(ip_range, ports='25565',
                          arguments='--max-rate 300000 --excludefile exclude.conf')
                 scan_result = json.loads(mas.scan_result)
-                print(scan_result)
+                print({scan_result["scan"]})
                 for ip in scan_result["scan"]:
+                    print(ip)
                     host = scan_result["scan"][ip]
-                    print(f"{ip} {host}")
+                    print(f"Found: {ip} {host}")
                     if "tcp" in host and 25565 in host["tcp"]:
                         try:
                             server = JavaServer(ip, 25565)
@@ -40,7 +41,8 @@ if __name__ == "__main__":
                         except:
                             print("Failed to get status of: " + ip)
 
-            except OSError as err:
-                print(f"{ip_range} masscan error {err}")
-            time.sleep(30)
+            except:
+                print(f"{ip_range} masscan error")
+            print("-----")
+            time.sleep(5)
         print("done scanning")
