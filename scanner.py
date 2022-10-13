@@ -10,6 +10,7 @@ import time
 
 ipQ = queue.LifoQueue()
 sendQ = queue.LifoQueue()
+sendQ.maxsize = 150
 
 
 class sendThread (threading.Thread):
@@ -23,12 +24,10 @@ class sendThread (threading.Thread):
         while True:
             serverSend = sendQ.get()
             try:
-                print(serverSend)
                 url = 'https://api.gamingformiau.de/api/mcscanner'
                 response = requests.post(url, json=serverSend)
                 print(response)
             except:
-                print(serverSend)
                 sendQ.put(serverSend)
                 print("Failed to send. Waititing 5 sec")
                 time.sleep(5)
