@@ -47,6 +47,7 @@ def print_time(threadName, ip):
                 playersString += player.name
         print(playersString)
         url = 'https://api.gamingformiau.de/api/mcscanner'
+        print(players)
         myobj = {'players': players,
                  'ip': ip,
                  'desc': status.description,
