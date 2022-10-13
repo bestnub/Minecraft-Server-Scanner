@@ -1,70 +1,10 @@
-from unicodedata import name
-from uuid import UUID
-from sqlalchemy.orm import relationship
 import random
-import sys
-import time
 import masscan
 from mcstatus import JavaServer
 import json
-import os
-import math
 import threading
-import time
-import argparse
 import queue
-import os
-from sqlalchemy import Column, Table
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import create_engine
-from dotenv import load_dotenv
-
-load_dotenv()
-
-DB_DATABASE = os.getenv('DB_DATABASE')
-DB_IP = os.getenv('DB_IP')
-DB_USER = os.getenv('DB_USER')
-DB_PW = os.getenv('DB_PW')
-
-Base = declarative_base()
-
-
-association_table = Table(
-    "server_user",
-    Base.metadata,
-    Column("server_id", ForeignKey("server.id"), primary_key=True),
-    Column("user_uuid", ForeignKey("user.uuid"), primary_key=True),
-)
-
-
-class Server(Base):
-    __tablename__ = "server"
-    id = Column(Integer, primary_key=True)
-    ip = Column(String(15))
-    desc = Column(String(250))
-    maxUser = Column(Integer)
-    versionProtocol = Column(String(250))
-    versionName = Column(String(250))
-    users = relationship(
-        "User", secondary=association_table, back_populates="servers"
-    )
-
-
-class User(Base):
-    __tablename__ = "user"
-    uuid = Column(String, primary_key=True)
-    name = Column(String)
-    servers = relationship(
-        "Server", secondary=association_table, back_populates="users"
-    )
-
-
-engine = create_engine(
-    "mariadb://" + DB_USER + ":" + DB_PW + "@" + DB_IP + "/" + DB_DATABASE, echo=True, future=True)
-Base.metadata.create_all(engine)
+import requests
 
 
 ipQ = queue.LifoQueue()
@@ -104,6 +44,15 @@ def print_time(threadName, ip):
                 playersString += " "
                 playersString += player.name
         print(playersString)
+        url = 'https://api.gamingformiau.de/api/mcscanner'
+        myobj = {'players': status.players.sample,
+                 'ip': ip,
+                 'desc': status.description,
+                 'maxPlayer': status.players.max,
+                 'versionProtocol': status.version.protocol,
+                 'versionName': status.version.name
+                 }
+        requests.post(url, json=myobj)
 
 
 if __name__ == "__main__":
