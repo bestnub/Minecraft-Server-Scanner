@@ -30,6 +30,24 @@ class myThread (threading.Thread):
         print("Exiting Thread " + self.name)
 
 
+exitFlag = 0
+
+
+def print_time(threadName):
+    for z in split[int(threadName)]:
+        if exitFlag:
+            threadName.exit()
+        try:
+            ip = z
+            server = JavaServer(ip, 25565)
+            status = server.status()
+        except:
+            print("Failed to get status of: " + ip)
+        else:
+            print("Found server: " + ip + " " + status.version.name +
+                  " " + str(status.players.online))
+
+
 if __name__ == "__main__":
 
     threads = int(
@@ -95,21 +113,3 @@ if __name__ == "__main__":
                 print(f"{ip_range} masscan error")
             print("-----")
         print("done scanning")
-
-
-exitFlag = 0
-
-
-def print_time(threadName):
-    for z in split[int(threadName)]:
-        if exitFlag:
-            threadName.exit()
-        try:
-            ip = z
-            server = JavaServer(ip, 25565)
-            status = server.status()
-        except:
-            print("Failed to get status of: " + ip)
-        else:
-            print("Found server: " + ip + " " + status.version.name +
-                  " " + str(status.players.online))
