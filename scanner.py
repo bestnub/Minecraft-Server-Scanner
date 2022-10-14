@@ -68,7 +68,7 @@ def print_time(threadName, ipPort):
         print("Failed to get status of: " + ip + ":" + portStr)
     else:
         print("Found server: " + ip + ":" + portStr + " " + status.version.name +
-              " " + str(status.players.online))
+              " " + str(status.players.online) +"/"+ str(status.players.max))
         players = []
         if status.players.sample is not None:
             for player in status.players.sample:
