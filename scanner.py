@@ -54,8 +54,8 @@ exitFlag = 0
 
 
 def print_time(threadName, ipPort):
-    ip = ipPort["ip"]
-    port = ipPort["port"]
+    ip = str(ipPort["ip"])
+    port = str(ipPort["port"])
 
     if exitFlag:
         print("Exiting Thread " + threadName)
