@@ -64,7 +64,7 @@ def print_time(threadName, ipPort):
         server = JavaServer(ip, port)
         status = server.status()
     except:
-        print("Failed to get status of: " + ip)
+        print("Failed to get status of: " + ip + ":" + port)
     else:
         print("Found server: " + ip + ":" + port + " " + status.version.name +
               " " + str(status.players.online))
