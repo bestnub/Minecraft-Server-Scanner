@@ -8,9 +8,7 @@ import requests
 import time
 
 ipQ = queue.LifoQueue()
-# ipQ.maxsize = 150
 sendQ = queue.LifoQueue()
-# sendQ.maxsize = 300
 
 
 class sendThread(threading.Thread):
@@ -108,7 +106,7 @@ if __name__ == "__main__":
         for i in range(len(ip_ranges)):
             progress = round(i / len(ip_ranges) * 100)
             print(
-                f"IpRange: {ip_range} | Progress: {progress}% | Check queue: {ipQ.qsize()}"
+                f"IpRange: {ip_range} | Progress: {progress}% | Check queue: {ipQ.qsize()} | Send queue: {sendQ.qsize()}"
             )
             try:
                 mas = masscan.PortScanner()
@@ -117,31 +115,10 @@ if __name__ == "__main__":
                     ports='25565-25577',
                     arguments='--max-rate 300000 --excludefile exclude.conf')
                 scan_result = json.loads(mas.scan_result)
-                # print(scan_result["scan"])
-                # scanJobs = []
                 for ip in scan_result["scan"]:
                     host = scan_result["scan"][ip]
                     if "tcp" == host[0]["proto"] and 25565 == host[0]["port"]:
-                        # scanJobs.append(ip)
                         ipQ.put(ip)
-                        # try:
-                        #     server = JavaServer(ip, 25565)
-                        #     status = server.status()
-                        #     print("Server:")
-                        #     print(f"Desc: {status.description}")
-                        #     print(f"IP: {ip}")
-                        #     print(
-                        #         f"PalyerCount: {status.players.online}/{status.players.max}")
-                        #     playersString = "Palyer:"
-                        #     for player in status.players.sample:
-                        #         playersString += " "
-                        #         playersString += player.name
-                        #     print(playersString)
-                        #     print(
-                        #         f"Version: {status.version.protocol} {status.version.name}")
-                        #     print("-----")
-                        # except:
-                        #     print("Failed to get status of: " + ip)
 
             except OSError:
                 print(f"{ip_range} masscan error")
