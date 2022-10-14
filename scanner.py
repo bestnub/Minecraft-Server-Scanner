@@ -74,7 +74,7 @@ def print_time(threadName, ipPort):
         if status.players.sample is not None:
             for player in status.players.sample:
                 players.append({'id': player.id, 'name': player.name})
-        ipPortString = ip + ":" + portStr
+        ipPortString = str(ip + ":" + portStr)
         serverScan = {
             'players': players,
             'ip': ipPortString,
@@ -110,14 +110,15 @@ if __name__ == "__main__":
     while True:
         random.shuffle(ip_ranges)
         for i in range(len(ip_ranges)):
+            scanIpRange = ip_ranges[i]
             progress = round(i / len(ip_ranges) * 100)
             print(
-                f"IpRange: {ip_ranges[i]} | Progress: {progress}% | Check queue: {ipPortQ.qsize()} | Send queue: {sendQ.qsize()}"
+                f"IpRange: {scanIpRange} | Progress: {progress}% | Check queue: {ipPortQ.qsize()} | Send queue: {sendQ.qsize()}"
             )
             try:
                 mas = masscan.PortScanner()
                 mas.scan(
-                    ip_range,
+                    scanIpRange,
                     ports=
                     '25565,25566,25567,25568,25569,25570,25571,25572,25573,25574,25575,25576,25577',
                     arguments='--max-rate 300000 --excludefile exclude.conf')
@@ -129,6 +130,6 @@ if __name__ == "__main__":
                         ipPortQ.put({"ip": ip, "port": host[0]["port"]})
 
             except OSError:
-                print(f"{ip_range} masscan error")
+                print(f"{scanIpRange} masscan error")
         ipPortQ.join()
         print("done scanning")
