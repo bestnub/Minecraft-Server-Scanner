@@ -110,7 +110,7 @@ if __name__ == "__main__":
         for i in range(len(ip_ranges)):
             progress = round(i / len(ip_ranges) * 100)
             print(
-                f"IpRange: {ip_range} | Progress: {progress}% | Check queue: {ipPortQ.qsize()} | Send queue: {sendQ.qsize()}"
+                f"IpRange: {ip_ranges[i]} | Progress: {progress}% | Check queue: {ipPortQ.qsize()} | Send queue: {sendQ.qsize()}"
             )
             try:
                 mas = masscan.PortScanner()
