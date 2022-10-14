@@ -114,7 +114,7 @@ if __name__ == "__main__":
                 mas = masscan.PortScanner()
                 mas.scan(
                     ip_range,
-                    ports='25565',
+                    ports='25565-25577',
                     arguments='--max-rate 300000 --excludefile exclude.conf')
                 scan_result = json.loads(mas.scan_result)
                 # print(scan_result["scan"])
