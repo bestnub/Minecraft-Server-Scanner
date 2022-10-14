@@ -67,8 +67,9 @@ def print_time(threadName, ipPort):
     except:
         print("Failed to get status of: " + ip + ":" + portStr)
     else:
-        print("Found server: " + ip + ":" + portStr + " " + status.version.name +
-              " " + str(status.players.online) +"/"+ str(status.players.max))
+        print("Found server: " + ip + ":" + portStr + " " +
+              status.version.name + " " + str(status.players.online) + "/" +
+              str(status.players.max))
         players = []
         if status.players.sample is not None:
             for player in status.players.sample:
@@ -124,7 +125,7 @@ if __name__ == "__main__":
                 # print(scan_result["scan"])
                 for ip in scan_result["scan"]:
                     host = scan_result["scan"][ip]
-                    if "tcp" == host[0]["proto"] and 25565 == host[0]["port"]:
+                    if "tcp" == host[0]["proto"]:
                         ipPortQ.put({"ip": ip, "port": host[0]["port"]})
 
             except OSError:
