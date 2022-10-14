@@ -55,7 +55,8 @@ exitFlag = 0
 
 def print_time(threadName, ipPort):
     ip = str(ipPort["ip"])
-    port = str(ipPort["port"])
+    portStr = str(ipPort["port"])
+    port = int(ipPort["port"])
 
     if exitFlag:
         print("Exiting Thread " + threadName)
@@ -64,15 +65,15 @@ def print_time(threadName, ipPort):
         server = JavaServer(ip, port)
         status = server.status()
     except:
-        print("Failed to get status of: " + ip + ":" + port)
+        print("Failed to get status of: " + ip + ":" + portStr)
     else:
-        print("Found server: " + ip + ":" + port + " " + status.version.name +
+        print("Found server: " + ip + ":" + portStr + " " + status.version.name +
               " " + str(status.players.online))
         players = []
         if status.players.sample is not None:
             for player in status.players.sample:
                 players.append({'id': player.id, 'name': player.name})
-        ipPortString = ip + ":" + port
+        ipPortString = ip + ":" + portStr
         serverScan = {
             'players': players,
             'ip': ipPortString,
