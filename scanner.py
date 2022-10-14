@@ -111,7 +111,7 @@ if __name__ == "__main__":
         random.shuffle(ip_ranges)
         for i in range(len(ip_ranges)):
             scanIpRange = ip_ranges[i]
-            progress = round(i / len(ip_ranges) * 100)
+            progress = round(i / len(ip_ranges) * 10000) / 100
             print(
                 f"IpRange: {scanIpRange} | Progress: {progress}% | Check queue: {ipPortQ.qsize()} | Send queue: {sendQ.qsize()}"
             )
