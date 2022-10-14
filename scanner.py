@@ -7,14 +7,14 @@ import queue
 import requests
 import time
 
-
 ipQ = queue.LifoQueue()
 # ipQ.maxsize = 150
 sendQ = queue.LifoQueue()
 # sendQ.maxsize = 300
 
 
-class sendThread (threading.Thread):
+class sendThread(threading.Thread):
+
     def __init__(self, threadID):
         threading.Thread.__init__(self)
         self.threadID = threadID
@@ -28,17 +28,19 @@ class sendThread (threading.Thread):
                 url = 'https://api.gamingformiau.de/api/mcscanner'
                 response = requests.post(url, json=serverSend)
                 print(response.status_code)
-                if (response.status_code != 200):
+                if (response.status_code != 200
+                        and response.status_code != 500):
                     sendQ.put(serverSend)
-                    print(f"Failed to send {serverSend}. Waititing 30 sec")
+                    print(f"Failed to send:\n{serverSend}\nWaititing 30 sec")
                     time.sleep(30)
             except:
                 sendQ.put(serverSend)
-                print(f"Failed to send {serverSend}. Waititing 30 sec")
+                print(f"Failed to send:\n{serverSend}\nWaititing 30 sec")
                 time.sleep(30)
 
 
-class scanThread (threading.Thread):
+class scanThread(threading.Thread):
+
     def __init__(self, threadID):
         threading.Thread.__init__(self)
         self.threadID = threadID
@@ -63,20 +65,20 @@ def print_time(threadName, ip):
     except:
         print("Failed to get status of: " + ip)
     else:
-        print("Found server: " + ip + " " + status.version.name +
-              " " + str(status.players.online))
+        print("Found server: " + ip + " " + status.version.name + " " +
+              str(status.players.online))
         players = []
         if status.players.sample is not None:
             for player in status.players.sample:
-                players.append({'id': player.id,
-                               'name': player.name})
-        serverScan = {'players': players,
-                      'ip': ip,
-                      'desc': status.description,
-                      'maxPlayer': status.players.max,
-                      'versionProtocol': status.version.protocol,
-                      'versionName': status.version.name
-                      }
+                players.append({'id': player.id, 'name': player.name})
+        serverScan = {
+            'players': players,
+            'ip': ip,
+            'desc': status.description,
+            'maxPlayer': status.players.max,
+            'versionProtocol': status.version.protocol,
+            'versionName': status.version.name
+        }
         print(serverScan)
         sendQ.put(serverScan)
 
@@ -103,12 +105,17 @@ if __name__ == "__main__":
 
     while True:
         random.shuffle(ip_ranges)
-        for ip_range in ip_ranges:
-            print(f"{ip_range} Check queue: {ipQ.qsize()}")
+        for i in range(len(ip_ranges)):
+            progress = round(i / len(ip_ranges) * 100)
+            print(
+                f"IpRange: {ip_range} | Progress: {progress}% | Check queue: {ipQ.qsize()}"
+            )
             try:
                 mas = masscan.PortScanner()
-                mas.scan(ip_range, ports='25565',
-                         arguments='--max-rate 300000 --excludefile exclude.conf')
+                mas.scan(
+                    ip_range,
+                    ports='25565',
+                    arguments='--max-rate 300000 --excludefile exclude.conf')
                 scan_result = json.loads(mas.scan_result)
                 # print(scan_result["scan"])
                 # scanJobs = []
