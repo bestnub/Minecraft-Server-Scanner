@@ -119,7 +119,7 @@ if __name__ == "__main__":
                     ports='25565-25577',
                     arguments='--max-rate 300000 --excludefile exclude.conf')
                 scan_result = json.loads(mas.scan_result)
-                print(scan_result)
+                print(scan_result["scan"])
                 for ip in scan_result["scan"]:
                     host = scan_result["scan"][ip]
                     if "tcp" == host[0]["proto"] and 25565 == host[0]["port"]:
