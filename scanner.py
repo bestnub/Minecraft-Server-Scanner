@@ -84,7 +84,7 @@ def print_time(threadName, ip):
 if __name__ == "__main__":
 
     threads = int(
-        input('How many threads do you want to use? (Recommended 20): '))
+        input('How many threads do you want to use? (Recommended 100): '))
 
     for i in range(threads):
         scanThread(i).start()
